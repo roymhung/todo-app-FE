@@ -1,5 +1,12 @@
+import AppHeader from "./components/layout/app.header";
+
 const AppLayout = () => {
-  return <>app layout</>;
+  return (
+    <>
+      <AppHeader />
+      app layout
+    </>
+  );
 };
 
 export default AppLayout;
