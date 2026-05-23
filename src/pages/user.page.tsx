@@ -1,6 +1,12 @@
 import { Table } from "antd";
+import axios from "axios";
+import { useEffect } from "react";
 
 const UserPage = () => {
+  useEffect(() => {
+    axios.get("http://localhost:8080/users");
+  }, []);
+
   const dataSource = [
     {
       key: "1",
