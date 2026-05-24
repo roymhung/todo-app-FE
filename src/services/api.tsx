@@ -10,4 +10,9 @@ const createUserApi = (data: { name: string; email: string }) => {
   return axios.post(url, data);
 };
 
-export { getUsersApi, createUserApi };
+const updateUserApi = (id: number, name: string, email: string) => {
+  const url = `${import.meta.env.VITE_BACKEND_URL}/users/${id}`;
+  return axios.put(url, { id, name, email });
+};
+
+export { getUsersApi, createUserApi, updateUserApi };

@@ -1,8 +1,13 @@
-import { PlusCircleOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 import { Button, Table } from "antd";
 import { useEffect, useState } from "react";
 import CreateUserModal from "../components/modal/create.user.model";
 import { getUsersApi } from "../services/api";
+import UpdateUserModal from "../components/modal/update.user.modal";
 
 interface IUser {
   id: number;
@@ -13,6 +18,8 @@ interface IUser {
 const UserPage = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
+  const [dataUpdate, setDataUpdate] = useState<IUser | null>(null);
 
   const fetchUsers = async () => {
     const res = await getUsersApi();
@@ -26,6 +33,15 @@ const UserPage = () => {
     fetchUsers();
   }, []);
 
+  const handleClickEdit = (data: IUser) => {
+    setDataUpdate(data);
+    setOpenUpdateModal(true);
+  };
+
+  const handleClickDelete = (data: IUser) => {
+    console.log("Delete user: ", data);
+  };
+
   const columns = [
     {
       title: "Id",
@@ -38,6 +54,24 @@ const UserPage = () => {
     {
       title: "Email",
       dataIndex: "email",
+    },
+    {
+      title: "Action",
+      render: (_: string, record: IUser) => {
+        return (
+          <>
+            <EditOutlined
+              onClick={() => handleClickEdit(record)}
+              style={{ cursor: "pointer", color: "orange", marginRight: 20 }}
+            />
+
+            <DeleteOutlined
+              onClick={() => handleClickDelete(record)}
+              style={{ cursor: "pointer", color: "red" }}
+            />
+          </>
+        );
+      },
     },
   ];
 
@@ -64,6 +98,14 @@ const UserPage = () => {
         openCreateModal={openCreateModal}
         setOpenCreateModal={setOpenCreateModal}
         fetchUsers={fetchUsers}
+      />
+
+      <UpdateUserModal
+        openUpdateModal={openUpdateModal}
+        setOpenUpdateModal={setOpenUpdateModal}
+        fetchUsers={fetchUsers}
+        dataUpdate={dataUpdate}
+        setDataUpdate={setDataUpdate}
       />
     </div>
   );
