@@ -1,18 +1,43 @@
-import { Input, Modal } from "antd";
+import { App, Input, Modal } from "antd";
 import { useState } from "react";
+import { createUserApi } from "../../services/api";
 
 interface IProps {
   openCreateModal: boolean;
   setOpenCreateModal: (v: boolean) => void;
+  fetchUsers: any;
 }
 
 const CreateUserModal = (props: IProps) => {
-  const { openCreateModal, setOpenCreateModal } = props;
+  const { notification } = App.useApp();
+
+  const { openCreateModal, setOpenCreateModal, fetchUsers } = props;
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = () => {
-    console.log(">>> check : ", name, email);
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const res = await createUserApi({ name, email });
+      if (res?.data?.status === "success") {
+        notification.success({
+          message: "Thành công",
+          description: "Tạo user thành công",
+        });
+        setOpenCreateModal(false);
+        setName("");
+        setEmail("");
+        await fetchUsers();
+      }
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message ?? "Unknown error";
+      notification.error({
+        message: "Có lỗi xảy ra",
+        description: errorMessage,
+      });
+    }
+    setLoading(false);
   };
 
   return (
@@ -25,6 +50,7 @@ const CreateUserModal = (props: IProps) => {
         setOpenCreateModal(false);
       }}
       okText={"Save"}
+      okButtonProps={{ loading: loading }}
     >
       <div
         style={{
