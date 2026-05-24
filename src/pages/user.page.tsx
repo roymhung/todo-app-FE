@@ -1,7 +1,8 @@
-import { PlusCircleFilled, PlusCircleOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Table } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import CreateUserModal from "../components/modal/create.user.model";
 
 interface IUser {
   id: number;
@@ -11,6 +12,7 @@ interface IUser {
 
 const UserPage = () => {
   const [users, setUsers] = useState<IUser[]>([]);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   const fetchUsers = async () => {
     const res = await axios.get("http://localhost:8080/users");
@@ -49,11 +51,19 @@ const UserPage = () => {
         }}
       >
         <h3>Table Users</h3>
-        <Button type="primary" icon={<PlusCircleOutlined />}>
+        <Button
+          type="primary"
+          icon={<PlusCircleOutlined />}
+          onClick={() => setOpenCreateModal(true)}
+        >
           Add User
         </Button>
       </div>
       <Table bordered dataSource={users} columns={columns} rowKey={"id"} />
+      <CreateUserModal
+        openCreateModal={openCreateModal}
+        setOpenCreateModal={setOpenCreateModal}
+      />
     </div>
   );
 };
