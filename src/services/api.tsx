@@ -15,4 +15,9 @@ const updateUserApi = (id: number, name: string, email: string) => {
   return axios.put(url, { id, name, email });
 };
 
-export { getUsersApi, createUserApi, updateUserApi };
+const deleteUserApi = (id: number) => {
+  const url = `${import.meta.env.VITE_BACKEND_URL}/users/${id}`;
+  return axios.delete(url);
+};
+
+export { getUsersApi, createUserApi, updateUserApi, deleteUserApi };

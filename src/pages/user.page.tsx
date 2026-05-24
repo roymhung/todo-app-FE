@@ -3,10 +3,10 @@ import {
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Table } from "antd";
+import { Button, notification, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
 import CreateUserModal from "../components/modal/create.user.model";
-import { getUsersApi } from "../services/api";
+import { deleteUserApi, getUsersApi } from "../services/api";
 import UpdateUserModal from "../components/modal/update.user.modal";
 
 interface IUser {
@@ -38,8 +38,15 @@ const UserPage = () => {
     setOpenUpdateModal(true);
   };
 
-  const handleClickDelete = (data: IUser) => {
-    console.log("Delete user: ", data);
+  const handleClickDelete = async (data: IUser) => {
+    const res = await deleteUserApi(data.id);
+    if (res?.data?.status === "success") {
+      notification.success({
+        message: "Thành công",
+        description: "Xóa user thành công",
+      });
+      await fetchUsers();
+    }
   };
 
   const columns = [
@@ -65,10 +72,16 @@ const UserPage = () => {
               style={{ cursor: "pointer", color: "orange", marginRight: 20 }}
             />
 
-            <DeleteOutlined
-              onClick={() => handleClickDelete(record)}
-              style={{ cursor: "pointer", color: "red" }}
-            />
+            <Popconfirm
+              title="Delete the user"
+              description="Are you sure to delete this user?"
+              onConfirm={() => handleClickDelete(record)}
+              // onCancel={cancel}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined style={{ cursor: "pointer", color: "red" }} />
+            </Popconfirm>
           </>
         );
       },
